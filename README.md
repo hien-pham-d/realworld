@@ -10,40 +10,70 @@
 
 ### Installation
 
+#### Install package dependencies
 ```bash
 $ yarn install
 ```
 
-### Running the app
 
-```bash
+#### Prepare the `.env` file
+
+Copying the content from the `.env.example`.
+
+```shell
+cp .env.example .env
+```
+
+#### Setup the database
+
+```shell
+# note: use it in development environments only
+yarn prisma migrate reset
+
+```
+
+### Run
+
+```shell
 
 ###### development
 
-$ yarn run start
+yarn run start
 
 ###### watch mode
 
-$ yarn run start:dev
+yarn run start:dev
 
 ###### production mode
 
-$ yarn run start:prod
+yarn run start:prod
+
 ```
+
+### Debug
+
+Run the application with debug-enabled option.
+```shell
+yarn start:debug
+```
+
+Use a debuger client (e.g. VS Code, Chrome DevTools, ...) to `Attach` to the debugging session.
 
 ### Test
 
-```bash
+```shell
 
 ###### unit tests
-
-$ yarn run test
+# no test for now
+yarn run test
 
 ###### e2e tests
 
-$ yarn run test:e2e
+# no test for now
+yarn run test:e2e
 
 ###### test coverage
 
-$ yarn run test:cov
+# no test for now
+yarn run test:cov
 ```

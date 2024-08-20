@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Author {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  bio      String
+  image    String
+
+  articles Article[]
+
+  favorited Favorite[]
+
+  followedBy Follow[] @relation(name: "followedBy")
+  following  Follow[] @relation(name: "following")
+
+  @@index(fields: [username])
+  @@map(name: "author")
+}
+
+model Follow {
+  followedBy   Author @relation(name: "followedBy", fields: [followedById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  followedById Int    @map(name: "followed_by")
+  following    Author @relation(name: "following", fields: [followingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  followingId  Int    @map(name: "following_id")
+
+  @@id(fields: [followedById, followingId])
+  @@map(name: "follow")
+}
+
+model Tag {
+  id       Int            @id @default(autoincrement())
+  name     String         @unique
+  articles TagOnArticle[]
+
+  @@index(fields: [name])
+  @@map(name: "tag")
+}
+
+model Article {
+  slug        String         @id @default(uuid())
+  title       String
+  description String
+  body        String
+  tags        TagOnArticle[]
+  createdAt   DateTime       @default(now()) @map(name: "created_at")
+  updatedAt   DateTime       @updatedAt @map(name: "updated_at")
+  favoritedBy Favorite[]
+  author      Author         @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId    Int            @map(name: "author_id")
+
+  @@map(name: "article")
+}
+
+model TagOnArticle {
+  article   Article @relation(fields: [articleId], references: [slug], onDelete: Cascade, onUpdate: Cascade)
+  articleId String  @map(name: "article_id")
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tagId     Int     @map(name: "tag_id")
+
+  @@id(fields: [articleId, tagId])
+  @@map(name: "tag_on_article")
+}
+
+model Favorite {
+  article       Article @relation(fields: [articleId], references: [slug], onDelete: Cascade, onUpdate: Cascade)
+  articleId     String  @map(name: "article_id")
+  favoritedBy   Author  @relation(fields: [favoritedById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  favoritedById Int     @map(name: "favorited_by_id")
+
+  @@id(fields: [articleId, favoritedById])
+  @@map(name: "favorite")
+}
