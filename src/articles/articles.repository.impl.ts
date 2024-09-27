@@ -16,9 +16,13 @@ export class ArticlesRepositoryImpl implements ArticlesRepository {
     return await this.prismaCli.article.findMany({
       select: this.findBySelect,
       where: {
-        ...(query.tag === undefined ? {} : this.findByTagWhere),
-        ...(query.author === undefined ? {} : this.findByAuthorWhere),
-        ...(query.favorited === undefined ? {} : this.findByFavoritedWhere),
+        ...(query.tag === undefined ? {} : this.findByTagWhere(query.tag)),
+        ...(query.author === undefined
+          ? {}
+          : this.findByAuthorWhere(query.author)),
+        ...(query.favorited === undefined
+          ? {}
+          : this.findByFavoritedWhere(query.favorited)),
       },
       skip: query.offset,
       take: query.limit,
