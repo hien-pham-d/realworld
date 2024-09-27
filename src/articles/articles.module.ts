@@ -22,6 +22,8 @@ import { ArticlesRepositoryImpl } from './articles.repository.impl';
       },
     },
   ],
-  imports: [RouterModule.register([{ path: 'api', module: ArticlesModule }])],
+  imports: [
+    RouterModule.register([{ path: 'api/articles', module: ArticlesModule }]),
+  ],
 })
 export class ArticlesModule {}

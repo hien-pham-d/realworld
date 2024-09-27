@@ -3,7 +3,7 @@ import { GetArticlesResp, FindByQueryDto } from './dto/get-articles.dto';
 import { ArticlesService } from './articles.service';
 import { Article, Author } from './entities/findBy.entity';
 
-@Controller('articles')
+@Controller()
 export class ArticlesController {
   constructor(private articleService: ArticlesService) {}
   curUser = new Author({
