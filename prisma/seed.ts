@@ -3,31 +3,84 @@ const prisma = new PrismaClient();
 async function main() {
   const defaultAuthor = await prisma.author.create({
     data: {
-      username: 'default-author',
+      id: 1,
+      username: 'default',
       bio: 'I am the default user of this site',
-      image: 'TODO: this should be an image',
+      image: 'this should be an image',
       articles: {
         create: [
           {
-            title: 'Title 1',
+            title: 'Title: test article of the default author',
             description: 'Description 1.',
             body: 'Body 1.',
-          },
-          {
-            title: 'Title 2',
-            description: 'Description 2.',
-            body: 'Body 2.',
-          },
-          {
-            title: 'Title 3',
-            description: 'Description 3.',
-            body: 'Body 3.',
+            tags: {
+              create: [
+                {
+                  tag: {
+                    create: {
+                      name: 'tag1',
+                    },
+                  },
+                },
+              ],
+            },
           },
         ],
       },
     },
   });
-  console.log({ defaultAuthor });
+
+  await prisma.author.create({
+    data: {
+      username: 'authorA',
+      bio: 'I am a user of this site',
+      image: 'this should be an image',
+      articles: {
+        create: [
+          {
+            title: 'Title: test article of authorA',
+            description: 'Description 2.',
+            body: 'Body 2.',
+            tags: {
+              create: [
+                {
+                  tag: {
+                    create: {
+                      name: 'tag2',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            title:
+              'Title: one more article of authorA that is favorited by the default author',
+            description: 'Description 3.',
+            body: 'Body 3.',
+            tags: {
+              create: [
+                {
+                  tag: {
+                    create: {
+                      name: 'tag3',
+                    },
+                  },
+                },
+              ],
+            },
+            favoritedBy: {
+              create: [
+                {
+                  favoritedById: defaultAuthor.id,
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  });
 }
 
 main()
