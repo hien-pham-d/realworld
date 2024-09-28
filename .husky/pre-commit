@@ -5,4 +5,4 @@ IFS=$'\n\t'
 
 yarn lint-staged
 
-yarn test
+yarn test:e2e
