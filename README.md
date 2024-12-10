@@ -38,15 +38,15 @@ yarn prisma migrate reset
 
 ###### development
 
-yarn run start
+yarn start
 
 ###### watch mode
 
-yarn run start:dev
+yarn start:dev
 
 ###### production mode
 
-yarn run start:prod
+yarn start:prod
 
 ```
 
@@ -65,15 +65,15 @@ Use a debuger client (e.g. VS Code, Chrome DevTools, ...) to `Attach` to the deb
 
 ###### unit tests
 # no test for now
-yarn run test
+yarn test
 
 ###### e2e tests
 
 # no test for now
-yarn run test:e2e
+yarn test:e2e
 
 ###### test coverage
 
 # no test for now
-yarn run test:cov
+yarn test:cov
 ```
