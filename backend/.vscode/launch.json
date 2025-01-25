@@ -7,6 +7,16 @@
       "request": "attach",
       "skipFiles": ["<node_internals>/**"],
       "type": "node"
+    },
+    {
+      "type" : "pwa-node",
+      "request" : "launch",
+      "name" : "Launch Application (nvim)",
+      "runtimeExecutable" : "yarn",
+      "runtimeArgs" : ["start"],
+      "cwd" : "${workspaceFolder}",
+      "outputCapture" : "std",
+      "console" : "integratedTerminal"
     }
   ]
 }
