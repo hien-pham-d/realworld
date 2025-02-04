@@ -2,14 +2,13 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { Article } from './domain/articles.model';
 import { GetArticlesResp, FindByQueryDto } from './dto/get-articles.dto';
 import { ArticlesService } from './domain/articles.service';
-import { plainToInstance } from 'class-transformer';
 import { Author } from './domain/articles.model';
 
 @Controller()
 export class ArticlesController {
   constructor(private articleService: ArticlesService) {}
 
-  private curUser = plainToInstance(Author, {
+  private curUser = new Author({
     id: 1,
     username: 'default',
     bio: 'bio',
@@ -32,20 +31,21 @@ export class ArticlesController {
   private mapArticlesToRespDto(articles: Article[]): GetArticlesResp {
     return {
       articles: articles.map((article) => {
+        const articleProps = article.props;
         return {
-          slug: article.slug,
-          title: article.title,
-          description: article.description,
-          tagList: article.tags,
-          createdAt: article.createdAt.toISOString(),
-          updatedAt: article.updatedAt.toISOString(),
-          favorited: article.isFavoritedBy(this.curUser.id),
-          favoritesCount: article.favoritedBy.length,
+          slug: articleProps.slug,
+          title: articleProps.title,
+          description: articleProps.description,
+          tagList: articleProps.tags,
+          createdAt: articleProps.createdAt.toISOString(),
+          updatedAt: articleProps.updatedAt.toISOString(),
+          favorited: article.isFavoritedBy(this.curUser.props.id),
+          favoritesCount: articleProps.favoritedBy.length,
           author: {
-            username: article.author.username,
-            bio: article.author.bio,
-            image: article.author.image,
-            following: article.author.isFollowedBy(this.curUser.id),
+            username: articleProps.author.props.username,
+            bio: articleProps.author.props.bio,
+            image: articleProps.author.props.image,
+            following: articleProps.author.isFollowedBy(this.curUser.props.id),
           },
         };
       }),

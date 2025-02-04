@@ -1,19 +1,23 @@
 export type TagName = string;
 
+export interface ArticleProps {
+  slug: string;
+  title: string;
+  description: string;
+  tags: TagName[];
+  createdAt: Date;
+  updatedAt: Date;
+  favoritedBy: AuthorId[];
+  author: Author;
+}
 export class Article {
-  constructor(
-    public slug: string,
-    public title: string,
-    public description: string,
-    public tags: TagName[],
-    public createdAt: Date,
-    public updatedAt: Date,
-    public favoritedBy: AuthorId[],
-    public author: Author,
-  ) {}
+  props: ArticleProps;
+  constructor(props: ArticleProps) {
+    this.props = props;
+  }
 
   isFavoritedBy(otherAuthorId: AuthorId): boolean {
-    for (const authorId of this.favoritedBy) {
+    for (const authorId of this.props.favoritedBy) {
       if (authorId === otherAuthorId) {
         return true;
       }
@@ -24,17 +28,21 @@ export class Article {
 
 export type AuthorId = number;
 
+export interface AuthorProps {
+  id: AuthorId;
+  username: string;
+  bio: string;
+  image: string;
+  followedBy: AuthorId[];
+}
 export class Author {
-  constructor(
-    public id: number,
-    public username: string,
-    public bio: string,
-    public image: string,
-    public followedBy: AuthorId[],
-  ) {}
+  props: AuthorProps;
+  constructor(props: AuthorProps) {
+    this.props = props;
+  }
 
   isFollowedBy(otherAuthorId: AuthorId): boolean {
-    for (const authorId of this.followedBy) {
+    for (const authorId of this.props.followedBy) {
       if (authorId === otherAuthorId) {
         return true;
       }

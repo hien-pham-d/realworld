@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Article, Author } from './domain/articles.model';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { ArticlesRepository, FindByOpts } from './domain/articles.repository';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ArticlesRepositoryImpl implements ArticlesRepository {
@@ -33,27 +32,28 @@ export class ArticlesRepositoryImpl implements ArticlesRepository {
   private mapArticlesToEntity(
     articles: Prisma.PromiseReturnType<typeof this.findByPrisma>,
   ): Article[] {
-    return articles.map((article) =>
-      plainToInstance(Article, {
-        slug: article.slug,
-        title: article.title,
-        description: article.description,
-        author: plainToInstance(Author, {
-          id: article.author.id,
-          username: article.author.username,
-          bio: article.author.bio,
-          image: article.author.image,
-          followedBy: article.author.followedBy.map(
-            (followedBy) => followedBy.followedById,
+    return articles.map(
+      (article) =>
+        new Article({
+          slug: article.slug,
+          title: article.title,
+          description: article.description,
+          tags: article.tags.map((tag) => tag.tag.name),
+          createdAt: article.createdAt,
+          updatedAt: article.updatedAt,
+          favoritedBy: article.favoritedBy.map(
+            (favoritedBy) => favoritedBy.favoritedById,
           ),
+          author: new Author({
+            id: article.author.id,
+            username: article.author.username,
+            bio: article.author.bio,
+            image: article.author.image,
+            followedBy: article.author.followedBy.map(
+              (followedBy) => followedBy.followedById,
+            ),
+          }),
         }),
-        tags: article.tags.map((tag) => tag.tag.name),
-        createdAt: article.createdAt,
-        updatedAt: article.updatedAt,
-        favoritedBy: article.favoritedBy.map(
-          (favoritedBy) => favoritedBy.favoritedById,
-        ),
-      }),
     );
   }
 
