@@ -23,7 +23,7 @@ import { ArticlesRepositoryImpl } from './articles.repository.impl';
     },
   ],
   imports: [
-    RouterModule.register([{ path: 'api/articles', module: ArticlesModule }]),
+    RouterModule.register([{ path: '/articles', module: ArticlesModule }]),
   ],
 })
 export class ArticlesModule {}
