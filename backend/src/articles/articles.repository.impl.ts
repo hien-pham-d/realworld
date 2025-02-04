@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { Article, Author } from './entities/findBy.entity';
+import { Article, Author } from './domain/articles.model';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { ArticlesRepository, FindByQueryRepo } from './articles.repository';
+import { ArticlesRepository, FindByOpts } from './domain/articles.repository';
 
 @Injectable()
 export class ArticlesRepositoryImpl implements ArticlesRepository {
   constructor(private prismaCli: PrismaClient) {}
 
-  async findBy(query: FindByQueryRepo): Promise<Article[]> {
+  async findBy(query: FindByOpts): Promise<Article[]> {
     const result = await this.findByPrisma(query);
     return this.mapArticlesToEntity(result);
   }
 
-  private async findByPrisma(query: FindByQueryRepo) {
+  private async findByPrisma(query: FindByOpts) {
     return await this.prismaCli.article.findMany({
       select: this.findBySelect,
       where: {
@@ -38,6 +38,12 @@ export class ArticlesRepositoryImpl implements ArticlesRepository {
           slug: article.slug,
           title: article.title,
           description: article.description,
+          tags: article.tags.map((tag) => tag.tag.name),
+          createdAt: article.createdAt,
+          updatedAt: article.updatedAt,
+          favoritedBy: article.favoritedBy.map(
+            (favoritedBy) => favoritedBy.favoritedById,
+          ),
           author: new Author({
             id: article.author.id,
             username: article.author.username,
@@ -47,12 +53,6 @@ export class ArticlesRepositoryImpl implements ArticlesRepository {
               (followedBy) => followedBy.followedById,
             ),
           }),
-          tags: article.tags.map((tag) => tag.tag.name),
-          createdAt: article.createdAt,
-          updatedAt: article.updatedAt,
-          favoritedBy: article.favoritedBy.map(
-            (favoritedBy) => favoritedBy.favoritedById,
-          ),
         }),
     );
   }

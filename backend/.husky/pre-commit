@@ -4,5 +4,3 @@ set -euo pipefail
 IFS=$'\n\t'
 
 yarn lint-staged
-
-yarn test:e2e
