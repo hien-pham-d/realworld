@@ -31,21 +31,20 @@ export class ArticlesController {
   private mapArticlesToRespDto(articles: Article[]): GetArticlesResp {
     return {
       articles: articles.map((article) => {
-        const articleProps = article.props;
         return {
-          slug: articleProps.slug,
-          title: articleProps.title,
-          description: articleProps.description,
-          tagList: articleProps.tags,
-          createdAt: articleProps.createdAt.toISOString(),
-          updatedAt: articleProps.updatedAt.toISOString(),
-          favorited: article.isFavoritedBy(this.curUser.props.id),
-          favoritesCount: articleProps.favoritedBy.length,
+          slug: article.slug,
+          title: article.title,
+          description: article.description,
+          tagList: article.tags,
+          createdAt: article.createdAt.toISOString(),
+          updatedAt: article.updatedAt.toISOString(),
+          favorited: article.isFavoritedBy(this.curUser.id),
+          favoritesCount: article.favoritedBy.length,
           author: {
-            username: articleProps.author.props.username,
-            bio: articleProps.author.props.bio,
-            image: articleProps.author.props.image,
-            following: articleProps.author.isFollowedBy(this.curUser.props.id),
+            username: article.author.username,
+            bio: article.author.bio,
+            image: article.author.image,
+            following: article.author.isFollowedBy(this.curUser.id),
           },
         };
       }),
