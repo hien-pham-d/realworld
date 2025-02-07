@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Article, Author } from './domain/articles.model';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { ArticlesRepository, FindByOpts } from './domain/articles.repository';
+import {
+  ArticlesRepository,
+  CreateArticleData,
+  FindByOpts,
+} from './domain/articles.repository';
 
 @Injectable()
 export class ArticlesRepositoryImpl implements ArticlesRepository {
@@ -10,6 +14,63 @@ export class ArticlesRepositoryImpl implements ArticlesRepository {
   async findBy(query: FindByOpts): Promise<Article[]> {
     const result = await this.findByPrisma(query);
     return this.mapArticlesToEntity(result);
+  }
+
+  async create(data: CreateArticleData): Promise<Article> {
+    const result = await this.prismaCli.article.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        body: data.body,
+        tags: {
+          create: [
+            ...data.tagList.map((tag) => ({
+              tag: { create: { name: tag } },
+            })),
+          ],
+        },
+        authorId: data.authorId,
+      },
+      select: {
+        slug: true,
+        title: true,
+        description: true,
+        body: true,
+        tags: { select: { tag: { select: { name: true } } } },
+        createdAt: true,
+        updatedAt: true,
+        favoritedBy: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+            bio: true,
+            image: true,
+            followedBy: { select: { followedById: true } },
+          },
+        },
+      },
+    });
+
+    return new Article({
+      slug: result.slug,
+      title: result.title,
+      description: result.description,
+      body: result.body,
+      tags: result.tags.map((tag) => tag.tag.name),
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
+      favoritedBy: [],
+      author: new Author({
+        id: result.author.id,
+        username: result.author.username,
+        bio: result.author.bio,
+        image: result.author.image,
+        followedBy: result.author.followedBy.map(
+          (followedBy) => followedBy.followedById,
+        ),
+      }),
+    });
   }
 
   private async findByPrisma(query: FindByOpts) {
@@ -38,6 +99,7 @@ export class ArticlesRepositoryImpl implements ArticlesRepository {
           slug: article.slug,
           title: article.title,
           description: article.description,
+          body: article.body,
           tags: article.tags.map((tag) => tag.tag.name),
           createdAt: article.createdAt,
           updatedAt: article.updatedAt,
@@ -61,6 +123,7 @@ export class ArticlesRepositoryImpl implements ArticlesRepository {
     slug: true,
     title: true,
     description: true,
+    body: true,
     tags: {
       select: {
         tag: {

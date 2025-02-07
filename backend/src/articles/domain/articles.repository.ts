@@ -10,4 +10,13 @@ export interface FindByOpts {
 
 export interface ArticlesRepository {
   findBy: (query: FindByOpts) => Promise<Article[]>;
+  create: (data: CreateArticleData) => Promise<Article>;
+}
+
+export interface CreateArticleData {
+  body: string;
+  description: string;
+  title: string;
+  tagList: string[];
+  authorId: number;
 }
