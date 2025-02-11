@@ -4,6 +4,7 @@ export class Article {
   slug: string;
   title: string;
   description: string;
+  body: string;
   tags: TagName[];
   createdAt: Date;
   updatedAt: Date;
@@ -14,6 +15,7 @@ export class Article {
     slug: string;
     title: string;
     description: string;
+    body: string;
     tags: TagName[];
     createdAt: Date;
     updatedAt: Date;
@@ -23,6 +25,7 @@ export class Article {
     this.slug = props.slug;
     this.title = props.title;
     this.description = props.description;
+    this.body = props.body;
     this.tags = props.tags;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
