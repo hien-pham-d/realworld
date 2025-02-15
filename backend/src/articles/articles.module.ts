@@ -12,11 +12,7 @@ import { ArticlesRepositoryImpl } from './articles.repository.impl';
       provide: ArticlesService,
       useFactory: () => {
         return new ArticlesService(
-          new ArticlesRepositoryImpl(
-            new PrismaClient({
-              log: ['query', 'info', 'warn', 'error'],
-            }),
-          ),
+          new ArticlesRepositoryImpl(new PrismaClient({})),
         );
       },
     },

@@ -1,15 +1,14 @@
 import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
-import { Article } from './domain/articles.model';
+import { Article, Author } from './domain/articles.model';
 import { GetArticlesResp, FindByQueryDto } from './dto/get-articles.dto';
 import { ArticlesService } from './domain/articles.service';
-import { Author } from './domain/articles.model';
 import { CreateArticleDto, CreateArticleResp } from './dto/post-articles.dto';
 
 @Controller()
 export class ArticlesController {
-  constructor(private articleService: ArticlesService) {}
+  constructor(private readonly articleService: ArticlesService) {}
 
-  private curUser = new Author({
+  private readonly curUser = new Author({
     id: 1,
     username: 'default',
     bio: 'bio',

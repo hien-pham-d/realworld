@@ -9,7 +9,7 @@ import {
 
 @Injectable()
 export class ArticlesRepositoryImpl implements ArticlesRepository {
-  constructor(private prismaCli: PrismaClient) {}
+  constructor(private readonly prismaCli: PrismaClient) {}
 
   async findBy(query: FindByOpts): Promise<Article[]> {
     const result = await this.findByPrisma(query);
