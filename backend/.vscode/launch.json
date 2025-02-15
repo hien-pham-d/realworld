@@ -9,11 +9,21 @@
       "type": "node"
     },
     {
-      "type" : "pwa-node",
+      "type" : "node",
       "request" : "launch",
       "name" : "Launch Application",
       "runtimeExecutable" : "yarn",
       "runtimeArgs" : ["start"],
+      "cwd" : "${workspaceFolder}",
+      "outputCapture" : "std",
+      "console" : "integratedTerminal"
+    },
+    {
+      "type" : "node",
+      "request" : "launch",
+      "name" : "Launch Test",
+      "runtimeExecutable" : "yarn",
+      "runtimeArgs" : ["test:e2e", "-t", "POST.*validation error.*title"],
       "cwd" : "${workspaceFolder}",
       "outputCapture" : "std",
       "console" : "integratedTerminal"
