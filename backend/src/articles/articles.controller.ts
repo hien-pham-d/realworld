@@ -56,9 +56,7 @@ export class ArticlesController {
 
   @Post()
   @HttpCode(201)
-  async createArticles(
-    @Body() body: CreateArticleDto,
-  ): Promise<CreateArticleResp> {
+  async create(@Body() body: CreateArticleDto): Promise<CreateArticleResp> {
     const article = await this.articleService.create({
       body: body.article.body,
       description: body.article.description,

@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { ArticlesModule } from '../../src/articles/articles.module';
 import { PrismaClient } from '@prisma/client';
+import { FindByQueryDto } from 'src/articles/dto/get-articles.dto';
 
 describe('Integration Test', () => {
   let app: INestApplication;
@@ -14,6 +15,11 @@ describe('Integration Test', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+      }),
+    );
     await app.init();
 
     await truncateDatabase(prisma);
@@ -95,6 +101,35 @@ describe('Integration Test', () => {
         },
       ]),
       articlesCount: 1,
+    });
+  });
+
+  describe('Should return validation error (400) when GET /articles with an invalid query parameter.', () => {
+    const cases: {
+      query: Record<string, any>;
+      errMessage: string;
+    }[] = [
+      {
+        query: { limit: 'invalid' },
+        errMessage: 'limit must be an integer number',
+      },
+      {
+        query: { limit: '0' },
+        errMessage: 'limit must not be less than 1',
+      },
+      {
+        query: { tag: '' },
+        errMessage: 'tag should not be empty',
+      },
+    ];
+
+    test.each(cases)('$errMessage', async ({ query, errMessage }) => {
+      const response = await request(app.getHttpServer()).get(
+        `/articles?${new URLSearchParams(query).toString()}`,
+      );
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toContain(errMessage);
     });
   });
 });
