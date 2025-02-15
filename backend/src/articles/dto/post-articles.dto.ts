@@ -1,10 +1,22 @@
-export interface CreateArticleDto {
-  article: {
-    body: string;
-    description: string;
-    title: string;
-    tagList: string[];
-  };
+import { Type } from 'class-transformer';
+import { IsNotEmpty, ValidateNested } from 'class-validator';
+
+class CreateArticleArticleDto {
+  body: string;
+
+  description: string;
+
+  @IsNotEmpty()
+  title: string;
+
+  @IsNotEmpty({ each: true })
+  tagList: string[];
+}
+
+export class CreateArticleDto {
+  @Type(() => CreateArticleArticleDto)
+  @ValidateNested()
+  article: CreateArticleArticleDto;
 }
 
 export interface CreateArticleResp {

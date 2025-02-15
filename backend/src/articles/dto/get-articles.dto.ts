@@ -1,5 +1,6 @@
-import { Type } from 'class-transformer';
-import { IsInt, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsInt, IsNotEmpty, IsOptional, Min } from 'class-validator';
+
 export interface GetArticlesResp {
   articles: GetArticleResp[];
   articlesCount: number;
@@ -25,17 +26,28 @@ export interface AuthorResp {
 }
 
 export class FindByQueryDto {
+  @IsOptional()
+  @IsNotEmpty()
   tag?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
   author?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  // This is username of the user who favorited the article.
   favorited?: string;
 
   @IsOptional()
+  @Transform(({ value }) => parseInt(value))
   @IsInt()
-  @Type(() => Number)
+  @Min(1)
   limit?: number;
 
   @IsOptional()
+  @Transform(({ value }) => parseInt(value))
   @IsInt()
-  @Type(() => Number)
+  @Min(0)
   offset?: number;
 }
