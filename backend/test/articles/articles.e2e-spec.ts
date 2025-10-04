@@ -171,12 +171,12 @@ describe('POST /articles validation error', () => {
 });
 
 async function truncateDatabase(prisma: PrismaClient) {
-  const tables = await prisma.$queryRaw<Array<{ name: string }>>`
-		SELECT name 
-		FROM sqlite_master 
-		WHERE type='table' 
-			AND name NOT LIKE 'sqlite_%' 
-			AND name != '_prisma_migrations';
+  const tables = await prisma.$queryRaw<{ name: string }[]>`
+    SELECT name
+    FROM sqlite_master
+    WHERE type='table'
+    AND name NOT LIKE 'sqlite_%'
+    AND name != '_prisma_migrations';
   `;
 
   for (const table of tables) {
